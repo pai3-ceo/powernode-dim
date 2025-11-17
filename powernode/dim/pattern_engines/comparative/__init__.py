@@ -1,0 +1,2 @@
+"""Comparative Pattern Engine"""
+

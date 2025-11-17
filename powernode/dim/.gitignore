@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.pnpm-debug.log*
+dist/
+*.tsbuildinfo
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+/var/log/dim/
+
+# Data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# IPFS
+.ipfs/
+ipfs-data/
+
+# Model cache
+/var/lib/dim/models/
+models/
+
+# Environment
+.env
+.env.local
+
+# Generated code
+**/grpc_generated/
+**/generated/
+*.pb.go
+*.pb.js
+*.pb.py
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# TypeScript
+*.tsbuildinfo
+

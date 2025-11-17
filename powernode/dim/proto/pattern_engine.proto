@@ -1,0 +1,47 @@
+/**
+ * Pattern Engine Service
+ * gRPC service for pattern engine communication (optional, Phase 2)
+ * Currently pattern engines use HTTP, but this is for future gRPC support
+ */
+
+syntax = "proto3";
+
+package dim.pattern_engine;
+
+import "common.proto";
+
+option go_package = "github.com/pai3/dim/proto/pattern_engine";
+
+service PatternEngine {
+  // Execute pattern (alternative to HTTP endpoint)
+  rpc Execute(ExecuteRequest) returns (ExecuteResponse);
+  
+  // Get engine health
+  rpc GetHealth(GetHealthRequest) returns (HealthResponse);
+}
+
+// Execute request
+message ExecuteRequest {
+  string job_id = 1;
+  string spec_json = 2;  // JSON-encoded job specification
+}
+
+// Execute response
+message ExecuteResponse {
+  string job_id = 1;
+  string result_json = 2;  // JSON-encoded result
+  dim.common.Error error = 3;
+}
+
+// Get health request
+message GetHealthRequest {
+  // Empty - no parameters needed
+}
+
+// Health response
+message HealthResponse {
+  string status = 1;  // "ok", "degraded", "error"
+  string pattern = 2;  // "collaborative", "comparative", "chained"
+  string version = 3;
+}
+

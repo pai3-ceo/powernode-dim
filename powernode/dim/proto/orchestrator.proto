@@ -1,0 +1,119 @@
+/**
+ * DIM Orchestrator Service
+ * gRPC service for job submission, status, and management
+ */
+
+syntax = "proto3";
+
+package dim.orchestrator;
+
+import "common.proto";
+
+option go_package = "github.com/pai3/dim/proto/orchestrator";
+
+service Orchestrator {
+  // Submit a new inference job
+  rpc SubmitJob(SubmitJobRequest) returns (SubmitJobResponse);
+  
+  // Get job status
+  rpc GetJobStatus(GetJobStatusRequest) returns (JobStatusResponse);
+  
+  // Cancel a running job
+  rpc CancelJob(CancelJobRequest) returns (CancelJobResponse);
+  
+  // Get job result
+  rpc GetJobResult(GetJobResultRequest) returns (JobResultResponse);
+  
+  // List active jobs (optional, for monitoring)
+  rpc ListJobs(ListJobsRequest) returns (ListJobsResponse);
+}
+
+// Submit job request
+message SubmitJobRequest {
+  string user_id = 1;
+  dim.common.Pattern pattern = 2;
+  string config_json = 3;  // JSON-encoded pattern config
+  dim.common.Priority priority = 4;
+  int32 max_cost = 5;  // Max $PAI3 tokens
+}
+
+// Submit job response
+message SubmitJobResponse {
+  string job_id = 1;
+  string status = 2;
+  int32 estimated_cost = 3;
+  string estimated_completion = 4;  // ISO 8601 timestamp
+  dim.common.Error error = 5;
+}
+
+// Get job status request
+message GetJobStatusRequest {
+  string job_id = 1;
+}
+
+// Job status response
+message JobStatusResponse {
+  string job_id = 1;
+  dim.common.JobState status = 2;
+  dim.common.Pattern pattern = 3;
+  dim.common.JobProgress progress = 4;
+  int32 cost_actual = 5;
+  string result_json = 6;  // If completed
+  string error = 7;  // If failed
+  repeated dim.common.NodeJobStatus nodes = 8;
+  string created_at = 9;  // ISO 8601 timestamp
+  string started_at = 10;  // ISO 8601 timestamp
+  string completed_at = 11;  // ISO 8601 timestamp
+  string estimated_completion = 12;  // ISO 8601 timestamp
+}
+
+// Cancel job request
+message CancelJobRequest {
+  string job_id = 1;
+  string user_id = 2;  // Optional: verify ownership
+}
+
+// Cancel job response
+message CancelJobResponse {
+  bool success = 1;
+  string message = 2;
+  dim.common.Error error = 3;
+}
+
+// Get job result request
+message GetJobResultRequest {
+  string job_id = 1;
+}
+
+// Job result response
+message JobResultResponse {
+  string job_id = 1;
+  string result_json = 2;  // JSON-encoded result
+  ResultMetadata metadata = 3;
+  dim.common.Error error = 4;
+}
+
+// Result metadata
+message ResultMetadata {
+  int32 nodes_used = 1;
+  string total_execution_time = 2;  // e.g., "125s"
+  int32 total_cost = 3;
+  string completed_at = 4;  // ISO 8601 timestamp
+}
+
+// List jobs request
+message ListJobsRequest {
+  string user_id = 1;  // Optional: filter by user
+  dim.common.JobState status_filter = 2;  // Optional: filter by status
+  int32 limit = 3;  // Max number of jobs to return
+  int32 offset = 4;  // Pagination offset
+}
+
+// List jobs response
+message ListJobsResponse {
+  repeated JobStatusResponse jobs = 1;
+  int32 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+

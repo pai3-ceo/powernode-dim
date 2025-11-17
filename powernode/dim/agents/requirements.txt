@@ -1,0 +1,17 @@
+# DIM Agent Execution Requirements
+
+# ML Frameworks (priority order for Apple Silicon)
+mlx>=0.0.1  # Apple Silicon optimized (primary)
+coremltools>=7.0  # CoreML support
+torch>=2.1.0  # PyTorch with MPS backend
+onnxruntime>=1.16.0  # ONNX fallback
+
+# Core dependencies
+numpy>=1.24.0
+
+# Note: Install ML frameworks based on availability
+# pip install mlx  # Primary for Apple Silicon
+# pip install torch torchvision  # PyTorch with MPS
+# pip install coremltools  # CoreML
+# pip install onnxruntime  # ONNX
+

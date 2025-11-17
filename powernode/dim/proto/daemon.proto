@@ -1,0 +1,116 @@
+/**
+ * DIM Daemon Service
+ * gRPC service for daemon job execution
+ */
+
+syntax = "proto3";
+
+package dim.daemon;
+
+import "common.proto";
+
+option go_package = "github.com/pai3/dim/proto/daemon";
+
+service Daemon {
+  // Submit job to daemon for execution
+  rpc SubmitJob(SubmitJobRequest) returns (SubmitJobResponse);
+  
+  // Get job status on this daemon
+  rpc GetJobStatus(GetJobStatusRequest) returns (JobStatusResponse);
+  
+  // Cancel job on this daemon
+  rpc CancelJob(CancelJobRequest) returns (CancelJobResponse);
+  
+  // Get daemon health and resource status
+  rpc GetHealth(GetHealthRequest) returns (HealthResponse);
+  
+  // Get daemon statistics
+  rpc GetStats(GetStatsRequest) returns (StatsResponse);
+}
+
+// Submit job request
+message SubmitJobRequest {
+  string job_id = 1;
+  string model_id = 2;
+  string data_source = 3;  // Optional: cabinet ID or data source
+  string input_data_json = 4;  // Optional: direct input data (JSON)
+  int32 timeout = 5;  // Timeout in seconds (default: 120)
+  dim.common.Priority priority = 6;
+}
+
+// Submit job response
+message SubmitJobResponse {
+  string job_id = 1;
+  string status = 2;  // "queued", "running", "completed", "failed"
+  dim.common.Error error = 3;
+}
+
+// Get job status request
+message GetJobStatusRequest {
+  string job_id = 1;
+}
+
+// Job status response
+message JobStatusResponse {
+  string job_id = 1;
+  string status = 2;  // "queued", "running", "completed", "failed"
+  string result_json = 3;  // If completed
+  string error = 4;  // If failed
+  string started_at = 5;  // ISO 8601 timestamp
+  string completed_at = 6;  // ISO 8601 timestamp
+  string execution_time = 7;  // e.g., "45s"
+}
+
+// Cancel job request
+message CancelJobRequest {
+  string job_id = 1;
+}
+
+// Cancel job response
+message CancelJobResponse {
+  bool success = 1;
+  string message = 2;
+  dim.common.Error error = 3;
+}
+
+// Get health request
+message GetHealthRequest {
+  // Empty - no parameters needed
+}
+
+// Health response
+message HealthResponse {
+  string status = 1;  // "healthy", "degraded", "unhealthy"
+  string node_id = 2;
+  ResourceStatus resources = 3;
+  repeated string cached_models = 4;
+  int32 active_jobs = 5;
+  int32 queued_jobs = 6;
+}
+
+// Resource status
+message ResourceStatus {
+  int32 cpu_available = 1;  // CPU cores available
+  int32 memory_available_gb = 2;  // Memory available in GB
+  bool gpu_available = 3;
+  float cpu_percent = 4;  // Current CPU usage percentage
+  float memory_percent = 5;  // Current memory usage percentage
+}
+
+// Get stats request
+message GetStatsRequest {
+  // Empty - no parameters needed
+}
+
+// Stats response
+message StatsResponse {
+  string node_id = 1;
+  int32 total_jobs = 2;
+  int32 successful_jobs = 3;
+  int32 failed_jobs = 4;
+  float avg_execution_time = 5;  // Average execution time in seconds
+  int32 cached_models_count = 6;
+  int64 cache_size_bytes = 7;
+  ResourceStatus resources = 8;
+}
+

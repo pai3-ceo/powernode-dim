@@ -1,0 +1,59 @@
+# DIM Production Configuration
+
+# Orchestrator
+orchestrator:
+  grpc_address: 0.0.0.0:50051
+  log_level: INFO
+  engines:
+    # Phase 2: Discovered via IPFS registry
+    discovery_mode: ipfs
+    # Phase 1: Direct endpoints
+    collaborative: http://localhost:8001
+    comparative: http://localhost:8002
+    chained: http://localhost:8003
+
+# Daemon
+daemon:
+  node_id: ${NODE_ID}  # Set via environment variable
+  grpc_address: 0.0.0.0:50052
+  log_level: INFO
+  cache_dir: /var/lib/dim/models
+  max_cache_gb: 50
+  max_concurrent_jobs: 50
+  max_queue_size: 1000
+  max_memory_gb: 64
+  max_cpu_percent: 80
+
+# IPFS Configuration
+ipfs:
+  api_url: /ip4/127.0.0.1/tcp/5001
+  gateway_url: http://localhost:8080
+  ipns_key_name: dim-state-key
+  registry_ipns: null  # Will be set after first IPNS publish
+  pubsub:
+    job_updates: dim.jobs.updates
+    node_heartbeat: dim.nodes.heartbeat
+    results_ready: dim.results.ready
+
+# Node Selection
+node_selection:
+  default_reputation_min: 0.85  # Higher threshold for production
+  max_nodes_per_job: 10
+
+# Reputation thresholds
+reputation:
+  min_for_production: 0.85
+  min_for_healthcare: 0.95
+  min_for_government: 0.98
+
+# Logging
+logging:
+  level: INFO
+  file: /var/log/dim/orchestrator.log
+
+# Security
+security:
+  enable_tls: false  # Phase 2
+  tls_cert: null
+  tls_key: null
+

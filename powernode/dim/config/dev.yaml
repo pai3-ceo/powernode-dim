@@ -1,0 +1,90 @@
+# DIM Development Configuration
+
+# Orchestrator
+orchestrator:
+  orchestrator_id: orchestrator-001  # Unique ID for this orchestrator
+  grpc_address: localhost:50051
+  log_level: INFO
+  max_concurrent_jobs: 100
+  heartbeat_interval_seconds: 30
+  heartbeat_timeout_seconds: 90
+  coordination_topic: dim.orchestrators.coordination
+  heartbeat_topic: dim.orchestrators.heartbeat
+  engines:
+    collaborative: http://localhost:8001
+    comparative: http://localhost:8002
+    chained: http://localhost:8003
+
+# Daemon
+daemon:
+  node_id: node-001
+  grpc_address: localhost:50052
+  log_level: INFO
+  cache_dir: /var/lib/dim/models
+  max_cache_gb: 50
+  max_concurrent_jobs: 10
+  max_queue_size: 1000
+  max_memory_gb: 64
+  max_cpu_percent: 80
+
+# IPFS Configuration
+ipfs:
+  api_url: /ip4/127.0.0.1/tcp/5001
+  gateway_url: http://localhost:8080
+  ipns_key_name: dim-state-key  # IPNS key name for mutable state
+  registry_ipns: null  # Will be set after first IPNS publish
+  pubsub:
+    job_updates: dim.jobs.updates
+    node_heartbeat: dim.nodes.heartbeat
+    results_ready: dim.results.ready
+
+# Node Selection
+node_selection:
+  default_reputation_min: 0.0
+  max_nodes_per_job: 10
+
+# Node Registry
+node_registry:
+  heartbeat_timeout_seconds: 120  # Mark node as stale if no heartbeat for this long
+
+# Node Discovery
+node_discovery:
+  heartbeat_timeout_seconds: 120  # Same as registry
+
+# Logging
+logging:
+  level: INFO
+  file: null  # Set to path for file logging
+
+# Performance Optimizations
+prewarming:
+  enabled: true
+  popular_models: []  # List of model IDs to pre-warm on startup
+  min_access_count: 5  # Minimum accesses to trigger pre-warming
+  access_window_hours: 24  # Time window for access counting
+
+connection_pool:
+  max_connections_per_endpoint: 10
+  connection_timeout_seconds: 30
+  idle_timeout_seconds: 300  # Close idle connections after 5 minutes
+
+# Rate Limiting
+rate_limiting:
+  enabled: false  # Enable in production
+  default_rate_per_minute: 60
+  burst_size: 10
+  user_limits: {}  # Per-user limits: {"user-id": {"rate_per_minute": 100, "burst_size": 20}}
+
+# Monitoring
+monitoring:
+  enabled: true
+  # Metrics are collected automatically
+  # Access via /metrics endpoint (to be implemented)
+
+# Security
+security:
+  enable_tls: false  # Enable TLS for production
+  tls_cert: null  # Path to TLS certificate file
+  tls_key: null  # Path to TLS private key file
+  tls_ca: null  # Path to CA certificate file (for client verification)
+

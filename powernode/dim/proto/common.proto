@@ -1,0 +1,69 @@
+/**
+ * Common Protocol Buffer Definitions for DIM
+ * Shared messages used across all services
+ */
+
+syntax = "proto3";
+
+package dim.common;
+
+option go_package = "github.com/pai3/dim/proto/common";
+
+// Job states
+enum JobState {
+  JOB_STATE_UNSPECIFIED = 0;
+  JOB_STATE_PENDING = 1;
+  JOB_STATE_RUNNING = 2;
+  JOB_STATE_COMPLETED = 3;
+  JOB_STATE_FAILED = 4;
+  JOB_STATE_CANCELLED = 5;
+}
+
+// Inference patterns
+enum Pattern {
+  PATTERN_UNSPECIFIED = 0;
+  PATTERN_COLLABORATIVE = 1;
+  PATTERN_COMPARATIVE = 2;
+  PATTERN_CHAINED = 3;
+}
+
+// Job priority
+enum Priority {
+  PRIORITY_UNSPECIFIED = 0;
+  PRIORITY_LOW = 1;
+  PRIORITY_NORMAL = 2;
+  PRIORITY_HIGH = 3;
+}
+
+// Node status
+enum NodeStatus {
+  NODE_STATUS_UNSPECIFIED = 0;
+  NODE_STATUS_ACTIVE = 1;
+  NODE_STATUS_INACTIVE = 2;
+  NODE_STATUS_MAINTENANCE = 3;
+}
+
+// Job progress information
+message JobProgress {
+  int32 completed_steps = 1;
+  int32 total_steps = 2;
+  int32 percent_complete = 3;
+}
+
+// Node status in a job
+message NodeJobStatus {
+  string node_id = 1;
+  string status = 2;  // "pending", "running", "completed", "failed"
+  string execution_time = 3;
+  string error = 4;
+  string started_at = 5;  // ISO 8601 timestamp
+  string completed_at = 6;  // ISO 8601 timestamp
+}
+
+// Error information
+message Error {
+  string code = 1;
+  string message = 2;
+  string details = 3;
+}
+

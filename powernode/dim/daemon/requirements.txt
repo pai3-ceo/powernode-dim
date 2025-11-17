@@ -1,0 +1,16 @@
+# DIM Daemon Requirements
+
+# Core dependencies
+pydantic>=2.5.0
+pyyaml>=6.0.1
+psutil>=5.9.0
+
+# IPFS integration (uses powernode.ipfs)
+requests>=2.28.0
+
+# Async support
+asyncio-compat>=0.1.0
+
+# Logging
+# (uses standard library logging)
+
